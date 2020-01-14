@@ -18,7 +18,7 @@ class CreateOauthTokensTable extends Migration
             $table->bigIncrements('id');
 
             //user
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
 
             $table->string('provider_user_id')->nullable()->index();
