@@ -1,0 +1,8 @@
+/vendor
+composer.phar
+composer.lock
+.DS_Store
+Thumbs.db
+.idea
+phpunit.xml
+.php_cs.cache
