@@ -1,8 +1,8 @@
-/vendor
+build
 composer.phar
 composer.lock
+docs
+vendor
+coverage
 .DS_Store
-Thumbs.db
 .idea
-phpunit.xml
-.php_cs.cache

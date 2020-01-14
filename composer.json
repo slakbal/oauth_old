@@ -1,0 +1,56 @@
+{
+    "name": "slakbal/oauth",
+    "description": "My Oauth2 stuff",
+    "keywords": [
+        "oauth"
+    ],
+    "homepage": "https://github.com/slakbal/oauth",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Leslie Price",
+            "email": "leslie.price78@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "5.8.*|6.*",
+        "laravel/socialite": "^4.3",
+        "socialiteproviders/manager": "^3.4",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.8.*|4.*",
+        "phpunit/phpunit": "^7.0|^8.0",
+        "socialiteproviders/generators": "^4.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Slakbal\\Oauth\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Slakbal\\Oauth\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Slakbal\\Oauth\\OauthServiceProvider"
+            ],
+            "aliases": {
+                "Oauth": "Slakbal\\Oauth\\OauthFacade"
+            }
+        }
+    }
+}
