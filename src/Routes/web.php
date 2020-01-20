@@ -1,8 +1,13 @@
 <?php
 
-Route::group(['namespace' => 'Slakbal\Oauth\Controllers', 'prefix' => 'oauth2', 'middleware' => ['web']], function () {
+Route::group([
+    'namespace' => 'Slakbal\Oauth\Controllers',
+    'prefix' => 'oauth2',
+    'middleware' => ['web']
+], function () {
 
-    Route::get('{provider}', 'OAuthController@redirectToProvider')->name('oauth.redirect');
-    Route::get('{provider}/callback', 'OAuthController@handleProviderCallback')->name('oauth.callback');
+    Route::match(['get', 'post'], '{provider}/login', 'OAuthController@redirectToProvider')->name('oauth.redirect');
+
+    Route::match(['get', 'post'], 'callback', 'OAuthController@handleProviderCallback')->name('oauth.callback');
 
 });

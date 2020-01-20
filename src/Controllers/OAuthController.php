@@ -3,8 +3,8 @@
 namespace Slakbal\Oauth\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 use Slakbal\Oauth\Exception\OAuthException;
 
 class OAuthController extends Controller
@@ -14,6 +14,7 @@ class OAuthController extends Controller
     {
         return Socialite::driver($this->ProviderIsAllowed($provider))->redirect();
     }
+
 
     private function ProviderIsAllowed($provider)
     {
@@ -26,13 +27,23 @@ class OAuthController extends Controller
         return $provider;
     }
 
+
     private function sanitizeValue($value)
     {
         return strtolower(trim($value));
     }
 
-    public function handleProviderCallback(Request $request)
+
+    public function handleProviderCallback()
     {
-        dd($request);
+        $provider = 'siv';
+
+        try {
+            $user = Socialite::driver($provider)->user();
+        } catch (InvalidStateException $e) {
+            $user = Socialite::driver($provider)->stateless()->user();
+        }
+
     }
+
 }

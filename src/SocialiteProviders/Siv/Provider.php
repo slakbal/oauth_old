@@ -12,6 +12,20 @@ class Provider extends AbstractProvider
      */
     const IDENTIFIER = 'SIV';
 
+    private const BASEURL_PROD = 'https://accounts.siv.de';
+
+    private const BASEURL_TEST = 'https://accounts-test.siv.de';
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getAuthUrl($state)
+    {
+        return $this->buildAuthUrlFromBase($this->getBaseUrl() . '/accounts/authorize', $state);
+    }
+
+
     /**
      * The scopes being requested.
      *
@@ -19,24 +33,16 @@ class Provider extends AbstractProvider
      */
     protected $scopes = [
         'openid',
-        'profile',
-        'email',
+//        'email',
+//        'profile',
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getAuthUrl($state)
-    {
-        return $this->buildAuthUrlFromBase('https://accounts.siv.de/accounts/authorize', $state);
-    }
 
     /**
      * {@inheritdoc}
      */
     protected function getTokenUrl()
     {
-        return 'https://accounts.siv.de/accounts/token';
+        return $this->getBaseUrl() . '/accounts/token';
     }
 
     /**
@@ -44,13 +50,15 @@ class Provider extends AbstractProvider
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->post('https://accounts.siv.de/accounts/userinfo', [
+        $response = $this->getHttpClient()->get($this->getBaseUrl() . '/accounts/userinfo', [
             'headers' => [
+                //Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $token,
             ],
         ]);
-        //todo inspect here
-        //dd($response);
+
+        //todo inspect response here
+//        dd(json_decode($response->getBody(), true));
         return json_decode($response->getBody(), true);
     }
 
@@ -60,7 +68,7 @@ class Provider extends AbstractProvider
     protected function mapUserToObject(array $user)
     {
         //todo inspect here
-        //dd($user);
+        dd($user);
         return (new User())->setRaw($user)->map([
             'id' => $user['id'],
             'nickname' => $user['username'],
@@ -78,5 +86,14 @@ class Provider extends AbstractProvider
         return array_merge(parent::getTokenFields($code), [
             'grant_type' => 'authorization_code'
         ]);
+    }
+
+    protected function getBaseUrl()
+    {
+        if (app()->environment('production')) {
+            return self::BASEURL_PROD;
+        }
+
+        return self::BASEURL_TEST;
     }
 }
