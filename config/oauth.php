@@ -6,8 +6,10 @@ return [
 
         'allowed' => [
             'siv',
+            'siv2',
             'facebook',
             'google',
+            'github',
         ],
 
     ]

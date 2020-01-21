@@ -16,6 +16,23 @@ class OAuthController extends Controller
     }
 
 
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($this->ProviderIsAllowed($provider))->user();
+
+        dd($user);
+
+        // Update Or Create User
+
+        //throw create or update event
+
+        // Add token
+
+        //throw login event
+
+    }
+
+
     private function ProviderIsAllowed($provider)
     {
         $provider = $this->sanitizeValue($provider);
@@ -32,18 +49,4 @@ class OAuthController extends Controller
     {
         return strtolower(trim($value));
     }
-
-
-    public function handleProviderCallback()
-    {
-        $provider = 'siv';
-
-        try {
-            $user = Socialite::driver($provider)->user();
-        } catch (InvalidStateException $e) {
-            $user = Socialite::driver($provider)->stateless()->user();
-        }
-
-    }
-
 }

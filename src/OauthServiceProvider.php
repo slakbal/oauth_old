@@ -3,7 +3,7 @@
 namespace Slakbal\Oauth;
 
 use Illuminate\Support\ServiceProvider;
-use Slakbal\Oauth\SocialiteProviders\Siv\Provider;
+use Slakbal\Oauth\Providers\Siv\Provider as SIVProvider;
 
 class OauthServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class OauthServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
-        $this->bootSIVSocialiteProvider();
+        $this->bootSivProvider();
 
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'oauth');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'oauth');
@@ -47,16 +47,19 @@ class OauthServiceProvider extends ServiceProvider
         }
     }
 
-    private function bootSIVSocialiteProvider()
+
+    protected function bootSivProvider()
     {
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+
         $socialite->extend(
             'siv',
             function ($app) use ($socialite) {
                 $config = $app['config']['services.siv'];
-                return $socialite->buildProvider(Provider::class, $config);
+                return $socialite->buildProvider(SIVProvider::class, $config);
             }
         );
+
     }
 
     /**

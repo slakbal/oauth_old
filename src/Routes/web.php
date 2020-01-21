@@ -6,8 +6,8 @@ Route::group([
     'middleware' => ['web']
 ], function () {
 
-    Route::match(['get', 'post'], '{provider}/login', 'OAuthController@redirectToProvider')->name('oauth.redirect');
+    Route::match(['get', 'post'], '{provider}', 'OAuthController@redirectToProvider')->name('oauth.redirect');
 
-    Route::match(['get', 'post'], 'callback', 'OAuthController@handleProviderCallback')->name('oauth.callback');
+    Route::match(['get', 'post'], '{provider}/callback', 'OAuthController@handleProviderCallback')->name('oauth.callback');
 
 });

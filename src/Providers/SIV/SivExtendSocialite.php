@@ -1,6 +1,6 @@
 <?php
 
-namespace Slakbal\Oauth\SocialiteProviders\Siv;
+namespace Slakbal\Oauth\Providers\Siv;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
