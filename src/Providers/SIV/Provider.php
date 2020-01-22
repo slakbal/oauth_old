@@ -4,8 +4,7 @@ namespace Slakbal\Oauth\Providers\Siv;
 
 use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\ProviderInterface;
-use SocialiteProviders\Manager\OAuth2\AbstractProvider;
-use SocialiteProviders\Manager\OAuth2\User;
+use Laravel\Socialite\Two\AbstractProvider;
 
 class Provider extends AbstractProvider implements ProviderInterface
 {
@@ -16,8 +15,8 @@ class Provider extends AbstractProvider implements ProviderInterface
 
     private const BASE_URL = 'https://accounts.siv.de';
 
-    protected $scopeSeparator = '+';
-    
+    protected $scopeSeparator = ' ';
+
     /**
      * The scopes being requested.
      *
@@ -25,9 +24,15 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected $scopes = [
         'openid',
-//        'email',
-//        'profile',
+        'email',
+        'profile',
     ];
+
+
+    protected function getBaseUrl()
+    {
+        return self::BASE_URL;
+    }
 
 
     /**
@@ -73,13 +78,13 @@ class Provider extends AbstractProvider implements ProviderInterface
         $lastName = Arr::get($user, 'familyName');
 
         return (new User)->setRaw($user)->map([
-            'id' => Arr::get($user, 'id'),
+            'id' => Arr::get($user, 'id', null),
             'nickname' => $firstName,
             'name' => $firstName . ' ' . $lastName,
+            'email' => Arr::get($user, 'mail'),
+            'avatar' => Arr::get($user, 'avatar_url'),
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'email' => Arr::get($user, 'mail'),
-            'avatar' => Arr::get($user, 'avatar_url')
         ]);
     }
 
@@ -91,12 +96,6 @@ class Provider extends AbstractProvider implements ProviderInterface
         return array_merge(parent::getTokenFields($code), [
             'grant_type' => 'authorization_code',
         ]);
-    }
-
-
-    protected function getBaseUrl()
-    {
-        return self::BASE_URL;
     }
 
     /*

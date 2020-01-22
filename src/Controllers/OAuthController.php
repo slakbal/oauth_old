@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Slakbal\Oauth\Exception\OAuthException;
+use Slakbal\Oauth\Providers\Siv\User;
 
 class OAuthController extends Controller
 {
@@ -18,17 +19,30 @@ class OAuthController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver($this->ProviderIsAllowed($provider))->user();
+        $siv_user = Socialite::driver($this->ProviderIsAllowed($provider))->user();
 
-        dd($user);
+        $user = $this->userFindOrCreate($siv_user, $provider);
 
-        // Update Or Create User
-
-        //throw create or update event
 
         // Add token
 
         //throw login event
+
+    }
+
+
+    private function userFindOrCreate(User $user, $provider)
+    {
+        dd($user->getLastname().', '.$user->getFirstname());
+        return \App\User::firstOrCreate([
+            'email' => $user->getEmail()
+        ],[
+            'email' => $user->getEmail(),
+
+        ]);
+
+        //throw create or update event
+
 
     }
 
