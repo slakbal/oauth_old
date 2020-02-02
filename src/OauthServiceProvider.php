@@ -14,7 +14,7 @@ class OauthServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
+//        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
         $this->bootSivProvider();
 
@@ -71,8 +71,8 @@ class OauthServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'oauth');
 
         // Register the main class to use with the facade
-        $this->app->singleton('oauth', function () {
-            return new Oauth;
+        $this->app->bind('oauth', function () {
+            return new Oauth();
         });
     }
 

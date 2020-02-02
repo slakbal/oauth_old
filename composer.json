@@ -16,8 +16,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "illuminate/support": "5.8.*|6.*",
-        "laravel/socialite": "^4.3",
+        "illuminate/contracts": "^5.8|^6.0|^7.0",
+        "laravel/socialite": "^4",
         "ext-json": "*"
     },
     "require-dev": {
@@ -47,7 +47,7 @@
                 "Slakbal\\Oauth\\OauthServiceProvider"
             ],
             "aliases": {
-                "Oauth": "Slakbal\\Oauth\\OauthFacade"
+                "Oauth": "Slakbal\\Oauth\\Facade\\OAuth"
             }
         }
     }

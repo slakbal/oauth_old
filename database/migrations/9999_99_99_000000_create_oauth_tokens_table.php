@@ -17,15 +17,19 @@ class CreateOauthTokensTable extends Migration
 
             $table->bigIncrements('id');
 
-            //user
+            //user relation
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
 
-            $table->string('provider_user_id')->nullable()->index();
-            $table->string('provider')->nullable()->default('unknown');
-            $table->string('access_token')->nullable();
+            //provider information
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable()->index();
+            $table->string('token')->nullable();
+            $table->string('refresh_token')->nullable();
+            $table->integer('expires_in')->nullable();
 
-//            $table->unique(['provider_user_id', 'provider',]);
+            //unique constraint
+//          $table->unique(['provider_user_id', 'provider',]);
 
             $table->timestamps();
         });
