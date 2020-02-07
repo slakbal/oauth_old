@@ -81,7 +81,7 @@ class Provider extends AbstractProvider implements ProviderInterface
             'id' => Arr::get($user, 'id', null),
             'nickname' => $firstName,
             'name' => $firstName . ' ' . $lastName,
-            'email' => Arr::get($user, 'mail'),
+            'email' => strtolower(Arr::get($user, 'mail')),
             'avatar' => Arr::get($user, 'avatar_url'),
             'first_name' => $firstName,
             'last_name' => $lastName,
