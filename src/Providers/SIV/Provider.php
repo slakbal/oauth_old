@@ -3,8 +3,9 @@
 namespace Slakbal\Oauth\Providers\Siv;
 
 use Illuminate\Support\Arr;
-use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\AbstractProvider;
+use Laravel\Socialite\Two\InvalidStateException;
+use Laravel\Socialite\Two\ProviderInterface;
 
 class Provider extends AbstractProvider implements ProviderInterface
 {
@@ -24,10 +25,9 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected $scopes = [
         'openid',
-        'email',
         'profile',
+        'email',
     ];
-
 
     protected function getBaseUrl()
     {
@@ -53,20 +53,113 @@ class Provider extends AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Decodes the id_token so that the identity can be extracted from the claims
+     *
+     * @param null $jwt
+     * @return array|false
+     */
+    public function decode($jwt = null)
+    {
+        if ($jwt) {
+            $jwt = list($header, $claims, $signature) = explode('.', $jwt);
+
+            $header = self::decodeFragment($header);
+            $claims = self::decodeFragment($claims);
+            $signature = (string)base64_decode($signature);
+
+            return [
+                'header' => $header,
+                'claims' => $claims,
+                'signature' => $signature
+            ];
+        }
+
+        return false;
+    }
+
+    /**
+     * Decode the specific fragment from the JWT token
+     *
+     * @param $value
+     * @return array
+     */
+    protected function decodeFragment($value)
+    {
+        return (array)json_decode(base64_decode($value));
+    }
+
+
+    /**
+     * Decodes the id_token JWT and maps the claims to the same names as what the identity provider
+     * end-point of the server would return to ensure compatibility.
+     *
+     * @param $token
+     * @return array
+     */
+    protected function extractClaimsFromIDToken($token): array
+    {
+        if ($decodedTokenArray = $this->decode($token)) {
+            return [
+                'givenName' => $decodedTokenArray['claims']['given_name'], //doing this to be compatible with the identity provider's end-point response in-case it need to be used
+                'familyName' => $decodedTokenArray['claims']['family_name'], //doing this to be compatible with the identity provider's end-point response in-case it need to be used
+                'mail' => $decodedTokenArray['claims']['mail'],
+                /*
+                "iat" => $decodedTokenArray['claims']['iat'],
+                "exp" => $decodedTokenArray['claims']['exp'],
+                "iss" => $decodedTokenArray['claims']['iss'],
+                "jti" => $decodedTokenArray['claims']['jti'],
+                "kid" => $decodedTokenArray['claims']['kid'],
+                "name" => $decodedTokenArray['claims']['name'],
+                "sco" => $decodedTokenArray['claims']['sco'],
+                "sid" => $decodedTokenArray['claims']['sid'],
+                "sub" => $decodedTokenArray['claims']['sub'],
+                "typ" => $decodedTokenArray['claims']['typ'],
+                "upn" => $decodedTokenArray['claims']['upn'],
+                */
+            ];
+        };
+
+        return [];
+    }
+
+    /**
+     * Overriding the base User method to make get the user from the JWT id_token (extractClaimsFromIDToken)
+     * instead of getUserByToken that pulls it from the identity provider (server) end-point and has a different
+     * signature
+     *
+     * @return \Laravel\Socialite\Contracts\User|User
+     */
+    public function user()
+    {
+        if ($this->hasInvalidState()) {
+            throw new InvalidStateException;
+        }
+
+        $response = $this->getAccessTokenResponse($this->getCode());
+
+        $user = $this->mapUserToObject($this->extractClaimsFromIDToken(
+            $idToken = Arr::get($response, 'id_token')
+        ));
+
+        return $user->setToken(Arr::get($response, 'access_token'))
+            ->setRefreshToken(Arr::get($response, 'refresh_token'))
+            ->setExpiresIn(Arr::get($response, 'expires_in'))
+            ->setIdToken($idToken);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getUserByToken($token)
     {
-        $userUrl = self::BASE_URL . '/accounts/userinfo';
-
-        $response = $this->getHttpClient()->post(
-            $userUrl, [
+        $response = $this->getHttpClient()->post($this->getBaseUrl() . '/accounts/userinfo', [
             'headers' => [
+                'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $token,
             ],
         ]);
 
-        return json_decode($response->getBody()->getContents(), true);
+        return json_decode($response->getBody(), true);
     }
 
     /**
@@ -89,13 +182,16 @@ class Provider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get the POST fields for the token request.
+     *
+     * @param string $code
+     * @return array
      */
     protected function getTokenFields($code)
     {
-        return array_merge(parent::getTokenFields($code), [
-            'grant_type' => 'authorization_code',
-        ]);
+        return Arr::add(
+            parent::getTokenFields($code), 'grant_type', 'authorization_code'
+        );
     }
 
     /*
@@ -121,4 +217,5 @@ class Provider extends AbstractProvider implements ProviderInterface
         ];
     }
     */
+
 }

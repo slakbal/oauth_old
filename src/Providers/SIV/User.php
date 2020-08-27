@@ -7,6 +7,12 @@ use Slakbal\Oauth\Providers\UserInterface;
 
 class User extends BaseUser implements UserInterface
 {
+    /**
+     * The identity token.
+     *
+     * @var string
+     */
+    public $idToken;
 
     /**
      * @inheritDoc
@@ -25,4 +31,27 @@ class User extends BaseUser implements UserInterface
         return $this->last_name;
     }
 
+
+    /**
+     * Set the id token required to obtain user information from for @SIV employee accounts.
+     *
+     * @param string $idToken
+     * @return $this
+     */
+    public function setIdToken($idToken)
+    {
+        $this->idToken = $idToken;
+
+        return $this;
+    }
+
+    /**
+     * Get the id token .
+     *
+     * @return string
+     */
+    public function getIdToken()
+    {
+        return $this->idToken;
+    }
 }

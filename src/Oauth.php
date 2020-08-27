@@ -7,15 +7,17 @@ use Slakbal\Oauth\Exception\OAuthException;
 
 class Oauth
 {
-    public function redirectToProvider($provider){
-        return Socialite::driver($this->providerIsAllowed($provider))->redirect();
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($this->providerAllowed($provider))->redirect();
     }
 
-    public function user($provider){
-        return Socialite::driver($this->providerIsAllowed($provider))->user();
+    public function user($provider)
+    {
+        return Socialite::driver($this->providerAllowed($provider))->user();
     }
 
-    private function providerIsAllowed($provider)
+    private function providerAllowed($provider)
     {
         $provider = $this->sanitizeValue($provider);
 
