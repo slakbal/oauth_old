@@ -34,26 +34,24 @@ class Provider extends AbstractProvider implements ProviderInterface
         return self::BASE_URL;
     }
 
-
     /**
      * {@inheritdoc}
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase($this->getBaseUrl() . '/accounts/authorize', $state);
+        return $this->buildAuthUrlFromBase($this->getBaseUrl().'/accounts/authorize', $state);
     }
-
 
     /**
      * {@inheritdoc}
      */
     protected function getTokenUrl()
     {
-        return $this->getBaseUrl() . '/accounts/token';
+        return $this->getBaseUrl().'/accounts/token';
     }
 
     /**
-     * Decodes the id_token so that the identity can be extracted from the claims
+     * Decodes the id_token so that the identity can be extracted from the claims.
      *
      * @param null $jwt
      * @return array|false
@@ -65,12 +63,12 @@ class Provider extends AbstractProvider implements ProviderInterface
 
             $header = self::decodeFragment($header);
             $claims = self::decodeFragment($claims);
-            $signature = (string)base64_decode($signature);
+            $signature = (string) base64_decode($signature);
 
             return [
                 'header' => $header,
                 'claims' => $claims,
-                'signature' => $signature
+                'signature' => $signature,
             ];
         }
 
@@ -78,16 +76,15 @@ class Provider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Decode the specific fragment from the JWT token
+     * Decode the specific fragment from the JWT token.
      *
      * @param $value
      * @return array
      */
     protected function decodeFragment($value)
     {
-        return (array)json_decode(base64_decode($value));
+        return (array) json_decode(base64_decode($value));
     }
-
 
     /**
      * Decodes the id_token JWT and maps the claims to the same names as what the identity provider
@@ -117,7 +114,7 @@ class Provider extends AbstractProvider implements ProviderInterface
                 "upn" => $decodedTokenArray['claims']['upn'],
                 */
             ];
-        };
+        }
 
         return [];
     }
@@ -125,7 +122,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     /**
      * Overriding the base User method to make get the user from the JWT id_token (extractClaimsFromIDToken)
      * instead of getUserByToken that pulls it from the identity provider (server) end-point and has a different
-     * signature
+     * signature.
      *
      * @return \Laravel\Socialite\Contracts\User|User
      */
@@ -152,10 +149,10 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->post($this->getBaseUrl() . '/accounts/userinfo', [
+        $response = $this->getHttpClient()->post($this->getBaseUrl().'/accounts/userinfo', [
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $token,
+                'Authorization' => 'Bearer '.$token,
             ],
         ]);
 
@@ -173,7 +170,7 @@ class Provider extends AbstractProvider implements ProviderInterface
         return (new User)->setRaw($user)->map([
             'id' => Arr::get($user, 'id', null),
             'nickname' => $firstName,
-            'name' => $firstName . ' ' . $lastName,
+            'name' => $firstName.' '.$lastName,
             'email' => strtolower(Arr::get($user, 'mail')),
             'avatar' => Arr::get($user, 'avatar_url'),
             'first_name' => $firstName,
@@ -217,5 +214,4 @@ class Provider extends AbstractProvider implements ProviderInterface
         ];
     }
     */
-
 }

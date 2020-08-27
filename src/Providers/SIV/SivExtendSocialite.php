@@ -11,6 +11,6 @@ class SivExtendSocialite
      */
     public function handle(SocialiteWasCalled $socialiteWasCalled)
     {
-        $socialiteWasCalled->extendSocialite('siv', __NAMESPACE__ . '\Provider');
+        $socialiteWasCalled->extendSocialite('siv', __NAMESPACE__.'\Provider');
     }
 }

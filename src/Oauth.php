@@ -21,7 +21,7 @@ class Oauth
     {
         $provider = $this->sanitizeValue($provider);
 
-        if (!in_array($provider, config('oauth.providers.allowed'))) {
+        if (! in_array($provider, config('oauth.providers.allowed'))) {
             throw OAuthException::providerNotSupported($provider);
         }
 

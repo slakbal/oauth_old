@@ -18,4 +18,3 @@ interface UserInterface
      */
     public function getLastname();
 }
-

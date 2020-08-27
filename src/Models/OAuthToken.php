@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class OAuthToken extends Model
 {
-    const SIV = "siv";
-    const FACEBOOK = "facebook";
-    const GOOGLE = "google";
+    const SIV = 'siv';
+    const FACEBOOK = 'facebook';
+    const GOOGLE = 'google';
 
     protected $table = 'oauth_tokens';
 
@@ -29,7 +29,7 @@ class OAuthToken extends Model
     */
 
     /**
-     * Get the user model of the token
+     * Get the user model of the token.
      */
     public function user()
     {

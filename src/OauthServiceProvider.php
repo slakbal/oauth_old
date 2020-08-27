@@ -12,7 +12,7 @@ class OauthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
 //        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
@@ -22,9 +22,8 @@ class OauthServiceProvider extends ServiceProvider
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'oauth');
 
         if ($this->app->runningInConsole()) {
-
             $this->publishes([
-                __DIR__ . '/../config/oauth.php' => config_path('oauth.php'),
+                __DIR__.'/../config/oauth.php' => config_path('oauth.php'),
             ], 'config');
 
             // Publishing the views.
@@ -47,7 +46,6 @@ class OauthServiceProvider extends ServiceProvider
         }
     }
 
-
     protected function bootSivProvider()
     {
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
@@ -56,10 +54,10 @@ class OauthServiceProvider extends ServiceProvider
             'siv',
             function ($app) use ($socialite) {
                 $config = $app['config']['services.siv'];
+
                 return $socialite->buildProvider(SIVProvider::class, $config);
             }
         );
-
     }
 
     /**
@@ -68,12 +66,11 @@ class OauthServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'oauth');
+        $this->mergeConfigFrom(__DIR__.'/../config/oauth.php', 'oauth');
 
         // Register the main class to use with the facade
         $this->app->bind('oauth', function () {
             return new Oauth();
         });
     }
-
 }

@@ -15,22 +15,20 @@ class User extends BaseUser implements UserInterface
     public $idToken;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getFirstname()
     {
         return $this->first_name;
     }
 
-
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLastname()
     {
         return $this->last_name;
     }
-
 
     /**
      * Set the id token required to obtain user information from for @SIV employee accounts.

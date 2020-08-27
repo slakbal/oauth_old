@@ -14,7 +14,6 @@ class CreateOauthTokensTable extends Migration
     public function up()
     {
         Schema::create('oauth_tokens', function (Blueprint $table) {
-
             $table->bigIncrements('id');
 
             //user relation
@@ -34,7 +33,6 @@ class CreateOauthTokensTable extends Migration
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
