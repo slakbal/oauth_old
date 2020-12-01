@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "illuminate/contracts": "^5.8|^6.0|^7.0",
+        "illuminate/contracts": "^5.8",
         "laravel/socialite": "^4",
         "ext-json": "*"
     },
